@@ -1,0 +1,15 @@
+api_platform:
+    formats:
+        json:     ['application/json']
+        jsonld:     ['application/json+ld']
+        html: ['text/html']
+        multipart: ['multipart/form-data']
+  # Allow using plain IDs for JSON format.
+    allow_plain_identifiers: true
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
+   

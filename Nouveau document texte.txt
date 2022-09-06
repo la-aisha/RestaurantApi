@@ -1,0 +1,8 @@
+api platform
+symfony new bookshop-api
+cd bookshop-api
+composer install
+composer require api
+symfony console doctrine:database:create
+symfony console doctrine:schema:create
+composer require symfony/maker-bundle --dev
