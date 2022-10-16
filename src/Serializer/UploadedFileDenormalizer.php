@@ -2,7 +2,8 @@
 // api/src/Serializer/UploadedFileDenormalizer.php
 
 namespace App\Serializer;
-
+//use App\Entity\Categorie;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 

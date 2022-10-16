@@ -1,4 +1,7 @@
-api_platform:
+api_platform:   
+    defaults:
+        pagination_enabled: false
+        #pagination_items_per_page: 100 # Default value
     formats:
         json:     ['application/json']
         jsonld:     ['application/json+ld']
@@ -12,4 +15,13 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+    eager_loading:
+        max_joins: 100       
+        fetch_partial: false
+        force_eager: true
+    collection:
+        pagination:
+            partial: true # Disabled 
+
+
    

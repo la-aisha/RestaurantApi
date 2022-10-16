@@ -13,6 +13,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+
+
+/**
+ * @Vich\Uploadable
+ */
 #[ORM\Entity(repositoryClass: ElementRepository::class)]
 #[ApiResource(
     iri: 'https://schema.org/Element',

@@ -20,6 +20,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: FournisseurRepository::class)]
 #[ApiResource(
     iri: 'https://schema.org/Fournisseur',
+    forceEager: true,
     normalizationContext: ['groups' => ['fournisseur:read']],
     denormalizationContext: ['groups' => ['fournisseur:write']],
     collectionOperations: [
@@ -35,14 +36,15 @@ class Fournisseur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(['fournisseur:read','element:read'])]
+
     #[ORM\Column]
     private ?int $id ;
 
-    #[Groups(['fournisseur:write','fournisseur:read'])]
+    #[Groups(['fournisseur:write','fournisseur:read' ,'element:read'])]
     #[ORM\Column(length: 255)]
     private ?string $nomFournisseur ;
 
-    #[ApiProperty(iri: 'https://schema.org/contentUrl')]
     #[Groups(['fournisseur:read'])]
     public ?string $contentUrl ;
 
@@ -56,15 +58,32 @@ class Fournisseur
     #[ORM\Column(nullable: true)] 
     public ?string $filePath ;
 
+    #[ApiProperty(fetchEager: true)]
     #[Groups(['fournisseur:write','fournisseur:read'])]
-    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'fournisseurs')]
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'fournisseurs',fetch: 'EAGER' )]
     private Collection $categories;
 
-    #[ORM\OneToMany(mappedBy: 'fournisseurs', targetEntity: Element::class)]
+    #[ApiProperty(fetchEager: true)]
+    #[ORM\OneToMany(mappedBy: 'fournisseurs', targetEntity: Element::class ,fetch: 'EAGER')]
     private Collection $elements;
+    
     #[Groups(['fournisseur:write','fournisseur:read'])]
     #[ORM\ManyToOne(inversedBy: 'fournisseurs')]
     private ?Zone $zones ;
+
+    #[ApiProperty(fetchEager: true)]
+    #[Groups(['fournisseur:write','fournisseur:read'])]
+    #[ORM\ManyToOne(inversedBy: 'fournisseurs' ,fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Type $types = null;
+    
+    #[Groups(['fournisseur:write','fournisseur:read'])]
+    #[ORM\Column(length: 255)]
+    private ?string $link = null;
+
+    #[Groups(['fournisseur:write','fournisseur:read'])]
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -153,6 +172,42 @@ class Fournisseur
     public function setZones(?Zone $zones): self
     {
         $this->zones = $zones;
+
+        return $this;
+    }
+
+    public function getTypes(): ?Type
+    {
+        return $this->types;
+    }
+
+    public function setTypes(?Type $types): self
+    {
+        $this->types = $types;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link): self
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

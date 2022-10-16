@@ -15,12 +15,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
+
 /**
  * @Vich\Uploadable
  */
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 #[ApiResource(
-    iri: 'https://schema.org/Categorie',
     normalizationContext: ['groups' => ['categorie:read']],
     denormalizationContext: ['groups' => ['categorie:write']],
     collectionOperations: [
@@ -34,21 +34,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 class Categorie
 {
-    #[Groups(['categorie:write','categorie:read'])]
+    #[Groups(['categorie:write','categorie:read','fournisseur:read','element:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id ;
 
-    #[Groups(['categorie:write','categorie:read'])]
+    #[ApiProperty(fetchEager: true)]
+    #[Groups(['categorie:write','categorie:read','fournisseur:read','element:read'])]
     #[ORM\Column(length: 255)]
-    private ?string $libelle ;
+    private ?string $libelle = null ; 
     
-    #[Groups(['categorie:write','categorie:read'])]
+    #[Groups(['categorie:write','categorie:read','fournisseur:read'])]
     #[ORM\Column(length: 255)]
-    private ?string $description ;
+    private ?string $description = null;
 
-    #[ApiProperty(iri: 'https://schema.org/contentUrl')]
     #[Groups(['categorie:read'])]
     public ?string $contentUrl ;
 
@@ -58,7 +58,7 @@ class Categorie
      */
     #[Groups(['categorie:write','categorie:read'])]
     //#[ORM\Column(nullable: true)] 
-    public ?File $file  ;
+    public ?File $file= null ;
 
     #[Groups(['categorie:write','categorie:read'])]
     #[ORM\Column(nullable: true)] 
@@ -77,18 +77,6 @@ class Categorie
     }
 
   
-
-    public function getFileUrl(): ?string
-    {
-        return $this->fileUrl;
-    }
-
-    public function setFileUrl(string $fileUrl): self
-    {
-        $this->fileUrl = $fileUrl;
-
-        return $this;
-    }
 
     public function getId(): ?int
     {

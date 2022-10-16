@@ -2,26 +2,26 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ZoneRepository;
+use App\Repository\TypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
-#[ORM\Entity(repositoryClass: ZoneRepository::class)]
+#[ORM\Entity(repositoryClass: TypeRepository::class)]
 #[ApiResource]
-class Zone
+
+class Type
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id ;
+    private ?int $id = null;
 
-    #[Groups(['fournisseur:read'])]
     #[ORM\Column(length: 255)]
-    private ?string $nomZone ;
+    private ?string $type = null;
 
-    #[ORM\OneToMany(mappedBy: 'zones', targetEntity: Fournisseur::class)]
+    #[ORM\OneToMany(mappedBy: 'types', targetEntity: Fournisseur::class)]
     private Collection $fournisseurs;
 
     public function __construct()
@@ -34,14 +34,14 @@ class Zone
         return $this->id;
     }
 
-    public function getNomZone(): ?string
+    public function getType(): ?string
     {
-        return $this->nomZone;
+        return $this->type;
     }
 
-    public function setNomZone(string $nomZone): self
+    public function setType(string $type): self
     {
-        $this->nomZone = $nomZone;
+        $this->type = $type;
 
         return $this;
     }
@@ -58,7 +58,7 @@ class Zone
     {
         if (!$this->fournisseurs->contains($fournisseur)) {
             $this->fournisseurs->add($fournisseur);
-            $fournisseur->setZones($this);
+            $fournisseur->setTypes($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Zone
     {
         if ($this->fournisseurs->removeElement($fournisseur)) {
             // set the owning side to null (unless already changed)
-            if ($fournisseur->getZones() === $this) {
-                $fournisseur->setZones(null);
+            if ($fournisseur->getTypes() === $this) {
+                $fournisseur->setTypes(null);
             }
         }
 
