@@ -9,6 +9,7 @@ use App\Entity\Type ;
 use App\Entity\Element;
 
 
+
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -39,6 +40,6 @@ final class MediaObjectNormalizer implements ContextAwareNormalizerInterface, No
             return false;
         }
 
-        return $data instanceof Categorie ||  $data instanceof Fournisseur ||  $data instanceof Element ;
+        return $data instanceof Categorie ||  $data instanceof Fournisseur ||  $data instanceof Element ||  $data instanceof Type  ;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FournisseurRepository;
@@ -36,12 +37,12 @@ class Fournisseur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(['fournisseur:read','element:read'])]
+    #[Groups(['fournisseur:read','element:read','categorie:read'])]
 
     #[ORM\Column]
     private ?int $id ;
 
-    #[Groups(['fournisseur:write','fournisseur:read' ,'element:read'])]
+    #[Groups(['fournisseur:write','fournisseur:read' ,'element:read','categorie:read'])]
     #[ORM\Column(length: 255)]
     private ?string $nomFournisseur ;
 
@@ -59,8 +60,9 @@ class Fournisseur
     public ?string $filePath ;
 
     #[ApiProperty(fetchEager: true)]
-    #[Groups(['fournisseur:write','fournisseur:read'])]
+    #[Groups(['fournisseur:write','fournisseur:read','element:read'])]
     #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'fournisseurs',fetch: 'EAGER' )]
+    #[ApiSubresource]
     private Collection $categories;
 
     #[ApiProperty(fetchEager: true)]
@@ -111,7 +113,7 @@ class Fournisseur
     }
 
     /**
-     * @return Collection<int, Categorie>
+     * @return Collection<int , Categorie>
      */
     public function getCategories(): Collection
     {

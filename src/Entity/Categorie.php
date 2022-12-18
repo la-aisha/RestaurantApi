@@ -10,10 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\Controller\CreateMediaObjectAction;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Groups; 
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 
 /**
@@ -34,7 +35,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 class Categorie
 {
-    #[Groups(['categorie:write','categorie:read','fournisseur:read','element:read'])]
+    #[Groups(['categorie:write','categorie:read','fournisseur:read' ,'element:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -45,7 +46,7 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $libelle = null ; 
     
-    #[Groups(['categorie:write','categorie:read','fournisseur:read'])]
+    #[Groups(['categorie:write','categorie:read','fournisseur:read' ])]
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
@@ -65,9 +66,12 @@ class Categorie
     public ?string $filePath ;
 
     #[ORM\ManyToMany(targetEntity: Fournisseur::class, mappedBy: 'categories')]
+    #[ApiSubresource]
     private Collection $fournisseurs;
 
     #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Element::class)]
+    #[Groups(['categorie:write','categorie:read'])]
+    #[ApiSubresource]
     private Collection $elements;
 
     public function __construct()

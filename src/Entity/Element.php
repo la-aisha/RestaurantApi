@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ElementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiProperty;
@@ -13,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 
 /**
@@ -37,14 +40,16 @@ class Element
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['element:read','categorie:read','commande'])]
+
     private ?int $id ;
 
-    #[Groups(['element:write'])]
+    #[Groups(['element:write' , 'categorie:read' ,'element:read' ,'commande'])]
     #[ORM\Column(length: 255)]
     private ?string $nomEl ;
 
 
-    #[Groups(['element:write','element:read'])]
+    #[Groups(['element:write','element:read',])]
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
     private ?string $prix ;
 
@@ -54,14 +59,16 @@ class Element
 
     #[Groups(['element:write','element:read'])]
     #[ORM\ManyToOne(inversedBy: 'elements')]
+    //#[ApiSubresource]
     private ?Categorie $categories ;
 
-    #[Groups(['element:write','element:read'])]
+    #[Groups(['element:write','element:read','categorie:read'])]
     #[ORM\ManyToOne(inversedBy: 'elements')]
+    #[ApiSubresource]
     private ?Fournisseur $fournisseurs ;
 
     #[ApiProperty(iri: 'https://schema.org/contentUrl')]
-    #[Groups(['element:read'])]
+    #[Groups(['element:read' ])]
     public ?string $contentUrl ;
 
     /**
@@ -73,6 +80,21 @@ class Element
     #[Groups(['element:write','element:read'])]
     #[ORM\Column(nullable: true)] 
     public ?string $filePath ;
+
+    #[Groups(['element:write','element:read','categorie:read'])]
+    #[ORM\Column]
+    private ?string $quantite = "1";
+
+    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'elements')]
+    private Collection $commandes;
+
+    public function __construct()
+    {
+        $this->commandes = new ArrayCollection();
+    }
+
+   
+   
 
     public function getId(): ?int
     {
@@ -138,4 +160,52 @@ class Element
 
         return $this;
     }
+
+    public function getQuantite(): ?string
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(int $quantite): self
+    {
+        $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->addElement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            $commande->removeElement($this);
+        }
+
+        return $this;
+    }
+
+   
+   
+
+   
+
+    
+
+  
 }

@@ -16,9 +16,9 @@ api_platform:
     swagger:
         versions: [3]
     eager_loading:
-        max_joins: 100       
-        fetch_partial: false
-        force_eager: true
+        enabled: false
+
+
     collection:
         pagination:
             partial: true # Disabled 
